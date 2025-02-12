@@ -1,0 +1,143 @@
+/* Layout Styles */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between; /* Ensure logo and notification are at the edges */
+  align-items: center;
+  padding: 10px 20px; /* Add padding for better spacing */
+  max-width: 1024px;
+  width: 100%; /* Full width */
+  margin: auto; /* Center the header */
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 80px; /* Set logo height */
+}
+
+/* Notification Styles */
+.notification-container {
+  position: relative;
+}
+
+.notification-icon {
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 6px;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  width: 250px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.notification-list {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+}
+
+.notification-empty {
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: gray;
+}
+
+.notification-footer {
+  padding: 10px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ddd;
+}
+
+.see-more-link {
+  color: #1e3a8a;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 0;
+  font-size: 12px;
+}
+
+/* Responsive Styles */
+
+/* Mobile Styles */
+@media only screen and (max-width: 740px) {
+  .header {
+    padding: 0.7rem;
+  }
+
+  .logo-container {
+    flex: 1; /* Allow logo to take available space */
+  }
+
+  .header-right {
+    margin-right: 1.5rem; /* Space between logo and notification */
+  }
+}
+
+/* Tablet Styles */
+@media only screen and (min-width: 740px) and (max-width: 1024px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .logo {
+    height: 70px; /* Adjust logo size for tablets */
+  }
+}
+
+/* Desktop Styles */
+@media only screen and (min-width: 1024px) {
+  .header {
+    padding: 1.5rem 2rem; /* More padding for larger screens */
+  }
+
+  .logo {
+    height: 80px; /* Maintain logo size for larger screens */
+  }
+}

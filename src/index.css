@@ -1,0 +1,127 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+:root {
+  font-family: system-ui;
+  line-height: 1.5;
+  font-weight: 400;
+  /* position: absolute; */
+
+  color-scheme: light dark;
+  color: rgba(25, 26, 23, 0.733);
+  background-color: #f7f2f2ee;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align:center;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: rgba(25, 26, 23, 0.733);
+}
+
+body {
+  margin:0;
+  min-height:100vh;
+}
+
+h1 {
+  @apply text-[3.2em] leading-tight;
+}
+
+button {
+  @apply rounded-lg border border-transparent px-4 py-2 text-base font-medium bg-neutral-900 cursor-pointer transition duration-200;
+}
+button:hover {
+  @apply border-blue-500;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    /* background-color: #ffffff; */
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    /* background-color: #f9f9f9; */
+  }
+}
+ button{
+  /* outline:1px solid green; */
+  /* border-radius:40px; */
+  /* margin:20px; */
+  width: auto;
+  background-color: transparent;
+ }
+
+
+i {
+ text-align: right;
+}
+
+input {
+  /* margin-left: auto; */
+  background-color:transparent;
+  padding: 8px;
+  font-size: 1rem;
+  cursor:pointer;
+  /* color:#fff; */
+  /* width: 40%; */
+  /* margin-left: 0; */
+  /* margin-right:; */
+  max-width: 200px;
+  border-radius:5px;
+  /* border: 1px solid rgba(25, 26, 23, 0.733); */
+}
+
+.sendbtn{
+  margin-left: auto;
+  margin-right: auto;
+  background-color:rgba(25, 26, 23, 0.733);
+  padding: 8px;
+  font-size: 1rem;
+  /* color:#fff; */
+  /* width: 40%; */
+  max-width: 400px;
+  border-radius:5px;
+  border: 1px solid rgba(25, 26, 23, 0.733);
+}
+
+.sendbtn:hover{
+  /* background-color: rgba(29, 134, 61, 0.726); */
+}
+
+.tableBody {
+  max-width: 1024px ;
+  width: 100%;
+  margin:auto;
+}
+
+/* marginInline:'10.2rem',maxWidth:"1024px", width:"100%" ,padding: "20px", fontFamily: "Arial, sans-serif", marginRight:"auto" */
+
+.back-icon:hover{
+  color: #000;
+  opacity: 0.5;
+  background-color: rgb(211, 208, 208);
+  transition: 0.6s ease-in-out;
+  /* color: green; */
+  border-radius: 50%;
+}
+
+a.back-icon{
+  /* float:inline-start; */
+}

@@ -1,0 +1,92 @@
+/* Home.jsx */
+.home-container {
+  margin: 2rem auto; /* Center the container */
+  max-width: 1024px;
+  padding: 0 1rem; /* Add some padding for smaller screens */
+}
+
+.tab-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.toptab, .bottomtab {
+  list-style: none;
+  padding: 0; /* Remove default padding */
+  display: grid;
+  gap: 1.5rem; /* Space between tabs */
+}
+
+.toptab {
+  grid-template-columns: repeat(1, 1fr);
+  margin: auto;
+  width: 50%;
+}
+
+.bottomtab {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.dashboard-title {
+  margin-bottom: 2rem;
+  text-align: center; /* Center the title */
+}
+
+/* Mobile responsive */
+@media screen and (max-width: 768px) {
+  .tab-grid {
+      grid-template-columns: 1fr; /* Stack tabs on small screens */
+  }
+
+  .home-container {
+      padding: 0 0.5rem; /* Adjust padding for smaller screens */
+  }
+
+  .dashboard-title {
+      margin-left: 0; /* Center title on small screens */
+  }
+}
+
+.tab {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  border-radius: 20px;
+  transition: ease-in-out transform 0.4s;
+  cursor: pointer;
+  outline: solid 2px rgb(1, 122, 58);
+  min-height: 4rem;
+  text-align: center;
+}
+
+.tab-link {
+  color: rgb(1, 122, 58);
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tab i {
+  font-size: 2rem; /* Icon size */
+  margin-bottom: 0.5rem; /* Space between icon and text */
+}
+
+.tab:hover {
+  opacity: 0.8;
+  transform: translateY(-5px); /* Hover animation */
+}
+
+/* Background colors for tabs */
+.parking-service {
+  /* background-color: #3b82f6; Blue */
+}
+
+.vehicle-details {
+  /* background-color: #10b981; Green */
+}
+
+.payment-transaction {
+  /* background-color: #f59e0b; Yellow */
+}
