@@ -1,31 +1,44 @@
-import React, { useState, useRef } from "react";
-import { FaFilter, FaPrint, FaArrowLeft, FaChevronLeft} from "react-icons/fa";
+import React, { useState, useRef, useEffect } from "react";
+import { FaFilter, FaPrint, FaChevronLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-// Example data for transactions
-const paymentTransactionData = [
-  {
-    servedBy: "Albert",
-    numberPlate: "KZP 123X",
-    paymentMethod: "M-Pesa",
-    mpesaRef: "MP123456789",
-    time: "2025-01-23 08:00 AM",
-  },
-];
-
 const PaymentTransaction = () => {
+  // State to hold transaction data fetched from the API
+  const [paymentTransactionData, setPaymentTransactionData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "ascending" });
   const tableRef = useRef();
 
-  // Filter data based on search query
+  useEffect(() => {
+    const token = "bearer token API URL";
+
+    fetch("https://your-api.com/payment-transactions", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setPaymentTransactionData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching payment transactions:", error);
+      });
+  }, []);
+
+  // Filter and sort the transactions based on search query and sort configuration
   const filteredTransactions = paymentTransactionData
-    .filter(
-      (transaction) =>
-        transaction.numberPlate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        transaction.servedBy.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        transaction.paymentMethod.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        transaction.mpesaRef.toLowerCase().includes(searchQuery.toLowerCase())
+    .filter((transaction) =>
+      transaction.numberPlate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.servedBy.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.paymentMethod.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.mpesaRef.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
       if (sortConfig.key) {
@@ -40,6 +53,7 @@ const PaymentTransaction = () => {
       return 0;
     });
 
+  // Print function
   const handlePrint = () => {
     const printContents = tableRef.current.innerHTML;
     const originalContents = document.body.innerHTML;
@@ -48,6 +62,7 @@ const PaymentTransaction = () => {
     document.body.innerHTML = originalContents;
   };
 
+  // Sorting function
   const handleSort = (key) => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -63,99 +78,90 @@ const PaymentTransaction = () => {
 
   return (
     <div className="tableBody">
-      <Link 
-      to="/" 
-      className="back-icon" 
-      title="Home" 
-      style={{
-        padding: "0.6rem",
-        color:"#000",
-        borderRadius: "50%",
-        // backgroundColor: "rgb(211, 208, 208)",
-        float:"left",
-        cursor: "pointer",
-        display: "inline-flex", // Ensure the link behaves like a button
-        // alignItems: "center", // Center the icon vertically
-        // justifyContent: "center" // Center the icon horizontally
-      }}
-    >
-      <FaChevronLeft style={{ fontSize: "1rem", borderRadius:"50%"}} /> 
-    </Link>
+      <Link
+        to="/"
+        className="back-icon"
+        title="Home"
+        style={{
+          padding: "0.6rem",
+          color: "#000",
+          borderRadius: "50%",
+          float: "left",
+          cursor: "pointer",
+          display: "inline-flex",
+        }}
+      >
+        <FaChevronLeft style={{ fontSize: "1rem", borderRadius: "50%" }} />
+      </Link>
       <h2>Payments</h2>
       <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          marginBottom: "20px",
-                        }}
-                      >
-                        {/* Filter Input with Icon Inside */}
-                        <div className="filterUtil" style={{ position: "relative", width: "40%", maxWidth: "400px" }}>
-                          <FaFilter
-                            style={{
-                              position: "absolute",
-                              left: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              color: "#555",
-                            }}
-                          />
-                          <input
-                            type="text"
-                            placeholder="Filter Here..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{
-                              float:"left",
-                              padding: "7px 30px", // Ensure space for the icon
-                              fontSize: "1rem",
-                              width: "60%",
-                              borderRadius: "5px",
-                              border: "1px solid #000",
-                            }}
-                          />
-                        </div>
-            
-                        {/* Print Button */}
-                        <div className="printUtil">
-                          <FaPrint style={{ marginRight: "10px", color: "#888" }} />
-                          <button
-                            onClick={handlePrint}
-                            style={{
-                              padding: "10px 20px",
-                              color:"#000",
-                              // backgroundColor:"FFCA08",
-                              outline:"none",
-                              borderRadius: "5px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            Print
-                          </button>
-                        </div>
-                      </div>
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        {/* Filter Input with Icon */}
+        <div
+          className="filterUtil"
+          style={{ position: "relative", width: "40%", maxWidth: "400px" }}
+        >
+          <FaFilter
+            style={{
+              position: "absolute",
+              left: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "#555",
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Filter Here..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              float: "left",
+              padding: "7px 30px",
+              fontSize: "1rem",
+              width: "60%",
+              borderRadius: "5px",
+              border: "1px solid #000",
+            }}
+          />
+        </div>
+
+        {/* Print Button */}
+        <div className="printUtil">
+          <FaPrint style={{ marginRight: "10px", color: "#888" }} />
+          <button
+            onClick={handlePrint}
+            style={{
+              padding: "10px 20px",
+              color: "#000",
+              outline: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Print
+          </button>
+        </div>
+      </div>
 
       {/* Scrollable Table Wrapper */}
       <div
         ref={tableRef}
         style={{
-          overflowX: "auto", // Enables horizontal scrolling
+          overflowX: "auto",
           border: "1px solid #4F7200",
           borderRadius: "5px",
         }}
       >
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-          }}
-        >
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead style={{ backgroundColor: "#0F7A41" }}>
             <tr>
-              {/* <th style={tableHeaderStyle} onClick={() => handleSort("servedBy")}>
-                Served By{renderSortIndicator("servedBy")}
-              </th> */}
               <th style={tableHeaderStyle} onClick={() => handleSort("numberPlate")}>
                 Number Plate{renderSortIndicator("numberPlate")}
               </th>
@@ -174,7 +180,6 @@ const PaymentTransaction = () => {
             {filteredTransactions.length > 0 ? (
               filteredTransactions.map((transaction, index) => (
                 <tr key={index}>
-                  {/* <td style={tableCellStyle}>{transaction.servedBy}</td> */}
                   <td style={tableCellStyle}>{transaction.numberPlate}</td>
                   <td style={tableCellStyle}>{transaction.paymentMethod}</td>
                   <td style={tableCellStyle}>{transaction.mpesaRef}</td>
@@ -183,7 +188,7 @@ const PaymentTransaction = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="5" style={{ padding: "10px", textAlign: "center" }}>
+                <td colSpan="4" style={{ padding: "10px", textAlign: "center" }}>
                   No data found
                 </td>
               </tr>

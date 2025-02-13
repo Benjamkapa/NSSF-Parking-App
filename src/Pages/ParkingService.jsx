@@ -41,9 +41,7 @@ const ParkingService = () => {
 
         if (response.data.status === 'fail') {
           alert('Payment initiation failed!');
-        } else {
-          alert(`M-Pesa payment prompt sent to phone.`);
-        }
+        } else {status_desc}
       } else {
         // Handle cash payment scenario
         alert(`Cash payment recorded Successfully`);

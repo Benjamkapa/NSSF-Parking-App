@@ -27,7 +27,7 @@ const Layout = () => {
   };
 
   useEffect(() => {
-    const eventSource = new EventSource("http://your-server-url/notifications");
+    const eventSource = new EventSource("notifications API");
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
