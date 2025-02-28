@@ -10,12 +10,12 @@ const PaymentTransaction = () => {
   const tableRef = useRef();
 
   useEffect(() => {
-    const token = "bearer token API URL";
+    // const token = "bearer token API URL";
 
-    fetch("https://your-api.com/payment-transactions", {
+    fetch("http://localhost:9823/payments", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
@@ -35,9 +35,9 @@ const PaymentTransaction = () => {
   // Filter and sort the transactions based on search query and sort configuration
   const filteredTransactions = paymentTransactionData
     .filter((transaction) =>
-      transaction.numberPlate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.reg_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
       transaction.servedBy.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      transaction.paymentMethod.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.payment_method.toLowerCase().includes(searchQuery.toLowerCase()) ||
       transaction.mpesaRef.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
@@ -162,11 +162,11 @@ const PaymentTransaction = () => {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead style={{ backgroundColor: "#0F7A41" }}>
             <tr>
-              <th style={tableHeaderStyle} onClick={() => handleSort("numberPlate")}>
-                Number Plate{renderSortIndicator("numberPlate")}
+              <th style={tableHeaderStyle} onClick={() => handleSort("reg_no")}>
+                Number Plate{renderSortIndicator("reg_no")}
               </th>
-              <th style={tableHeaderStyle} onClick={() => handleSort("paymentMethod")}>
-                Payment Method{renderSortIndicator("paymentMethod")}
+              <th style={tableHeaderStyle} onClick={() => handleSort("payment_method")}>
+                Payment Method{renderSortIndicator("payment_method")}
               </th>
               <th style={tableHeaderStyle} onClick={() => handleSort("mpesaRef")}>
                 M-Pesa Ref Number{renderSortIndicator("mpesaRef")}
@@ -180,8 +180,8 @@ const PaymentTransaction = () => {
             {filteredTransactions.length > 0 ? (
               filteredTransactions.map((transaction, index) => (
                 <tr key={index}>
-                  <td style={tableCellStyle}>{transaction.numberPlate}</td>
-                  <td style={tableCellStyle}>{transaction.paymentMethod}</td>
+                  <td style={tableCellStyle}>{transaction.reg_no}</td>
+                  <td style={tableCellStyle}>{transaction.payment_method}</td>
                   <td style={tableCellStyle}>{transaction.mpesaRef}</td>
                   <td style={tableCellStyle}>{transaction.time}</td>
                 </tr>

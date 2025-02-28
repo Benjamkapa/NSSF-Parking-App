@@ -11,32 +11,45 @@ const Layout = () => {
   const notificationSoundRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  const addNotification = (message) => {
+  const addNotification = (data) => {
+    const { message, reg_no, phone, amount } = data;
+
+    // Add a timestamp to the notification
     const newNotification = {
       message,
-      timestamp: Date.now(),
+      reg_no,
+      phone,
+      amount,
+      timestamp: new Date().toISOString(), // Add current timestamp
     };
+
     setNotifications((prev) => [newNotification, ...prev]);
     setNotificationCount((prev) => prev + 1);
 
+    // Play sound for new notification
     if (notificationSoundRef.current) {
-      notificationSoundRef.current.play().catch((error) => {
-        console.error("Error playing notification sound:", error);
-      });
+      notificationSoundRef.current
+        .play()
+        .catch((error) => console.error("Error playing notification sound:", error));
     }
   };
 
   useEffect(() => {
-    const eventSource = new EventSource("notifications API");
+    const eventSource = new EventSource("http://localhost:9823/events");
 
     eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      addNotification(data.message);
+      try {
+        const data = JSON.parse(event.data);
+        addNotification(data);
+      } catch (error) {
+        console.error("Error parsing SSE data:", error);
+      }
     };
 
     eventSource.onerror = (error) => {
-      console.error("Error with Server-Sent Events connection:", error);
+      console.error("Error with SSE connection:", error);
       eventSource.close();
+      setTimeout(connectSSE, 5000);
     };
 
     return () => {
@@ -45,8 +58,8 @@ const Layout = () => {
   }, []);
 
   const handleNotificationClick = () => {
+    if (notificationCount > 0) setNotificationCount(0); // Reset count when opened
     setShowNotificationDropdown(!showNotificationDropdown);
-    setNotificationCount(0);
   };
 
   const handleClickOutside = (event) => {
@@ -64,7 +77,7 @@ const Layout = () => {
 
   return (
     <div className="layout-container">
-      <audio ref={notificationSoundRef} src="/Notification" preload="auto" />
+      <audio ref={notificationSoundRef} src="/Notification.mp3" preload="auto" />
 
       <header className="header">
         <div className="logo-container">
@@ -79,7 +92,9 @@ const Layout = () => {
               onClick={handleNotificationClick}
             />
             {notificationCount > 0 && (
-              <span className="notification-badge">{notificationCount}</span>
+              <span className="notification-badge">
+                {notificationCount > 9 ? "9+" : notificationCount}
+              </span>
             )}
 
             {showNotificationDropdown && (
@@ -88,9 +103,15 @@ const Layout = () => {
                   {notifications.length > 0 ? (
                     notifications.slice(0, 4).map((notification, index) => (
                       <div key={index} className="notification-item">
-                        <strong>{notification.message}</strong>
+                        <strong>
+                          {notification.reg_no} Ksh. {notification.amount}
+                        </strong>
                         <span className="notification-time">
-                          {new Date(notification.timestamp).toLocaleTimeString()}
+                          {new Date(notification.timestamp).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
                         </span>
                       </div>
                     ))

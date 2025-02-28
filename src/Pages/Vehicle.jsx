@@ -3,15 +3,14 @@ import { Link } from "react-router-dom";
 import { FaFilter, FaPrint, FaChevronLeft } from "react-icons/fa";
 
 const Vehicle = () => {
-  // State to hold vehicle data fetched from the API
   const [vehicleData, setVehicleData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "ascending" });
   const tableRef = useRef();
 
-  // Fetch vehicle data from the API endpoint on component mount
+  // Fetch vehicle data from the API on component mount
   useEffect(() => {
-    fetch("https://your-api.com/vehicles")
+    fetch("http://localhost:9823/payments") // Ensure correct API endpoint
       .then((response) => response.json())
       .then((data) => {
         setVehicleData(data);
@@ -25,10 +24,9 @@ const Vehicle = () => {
   const filteredVehicles = vehicleData
     .filter(
       (vehicle) =>
-        vehicle.numberPlate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicle.phoneNumber.includes(searchQuery) ||
-        vehicle.servedBy.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicle.paymentMethod.toLowerCase().includes(searchQuery.toLowerCase())
+        vehicle.reg_no?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vehicle.phone?.includes(searchQuery) ||
+        vehicle.payment_method?.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
       if (sortConfig.key) {
@@ -152,14 +150,19 @@ const Vehicle = () => {
             borderCollapse: "collapse",
           }}
         >
-          <thead style={{ backgroundColor: "#0F7A41" }}>
+          <thead style={{ backgroundColor: "#0F7A41", color: "#fff" }}>
             <tr>
-              <th style={tableHeaderStyle} onClick={() => handleSort("numberPlate")}>
-                Number Plate{renderSortIndicator("numberPlate")}
+              <th style={tableHeaderStyle} onClick={() => handleSort("reg_no")}>
+                Number Plate {renderSortIndicator("reg_no")}
               </th>
-              {/* Additional headers can be added similarly */}
-              <th style={tableHeaderStyle} onClick={() => handleSort("timeIn")}>
-                Time{renderSortIndicator("timeIn")}
+              <th style={tableHeaderStyle} onClick={() => handleSort("phone")}>
+                Phone {renderSortIndicator("phone")}
+              </th>
+              <th style={tableHeaderStyle} onClick={() => handleSort("amount")}>
+                Amount {renderSortIndicator("amount")}
+              </th>
+              <th style={tableHeaderStyle} onClick={() => handleSort("payment_method")}>
+                Payment Method {renderSortIndicator("payment_method")}
               </th>
             </tr>
           </thead>
@@ -167,13 +170,15 @@ const Vehicle = () => {
             {filteredVehicles.length > 0 ? (
               filteredVehicles.map((vehicle, index) => (
                 <tr key={index}>
-                  <td style={tableCellStyle}>{vehicle.numberPlate}</td>
-                  <td style={tableCellStyle}>{vehicle.timeIn}</td>
+                  <td style={tableCellStyle}>{vehicle.reg_no || "N/A"}</td>
+                  <td style={tableCellStyle}>{vehicle.phone || "N/A"}</td>
+                  <td style={tableCellStyle}>{vehicle.amount || "N/A"}</td>
+                  <td style={tableCellStyle}>{vehicle.payment_method || "N/A"}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="2" style={{ padding: "10px", textAlign: "center" }}>
+                <td colSpan="4" style={{ padding: "10px", textAlign: "center" }}>
                   No data found
                 </td>
               </tr>
@@ -185,10 +190,10 @@ const Vehicle = () => {
   );
 };
 
+// Styles
 const tableHeaderStyle = {
   padding: "10px",
   borderBottom: "2px solid #ddd",
-  color: "#fff",
   cursor: "pointer",
 };
 

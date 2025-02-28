@@ -22,7 +22,7 @@ export default defineConfig({
         id: "org.nssf.parking",
         name: "NSSF Parking App",
         short_name: "Parking App",
-        description: "NSF Parking App | Modernizing NSSF parking service",
+        description: "NSSF Parking App | Modernizing NSSF parking service",
         theme_color: "#ffffff",
         background_color: "#ffffff",
         lang: "en-US",
