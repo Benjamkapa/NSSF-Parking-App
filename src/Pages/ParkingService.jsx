@@ -62,7 +62,8 @@ const ParkingService = () => {
 
     } catch (error) {
       console.error('Error during payment:', error);
-      alert('An error occurred while processing your payment. Please try again.');
+      alert('Issue with SSE Endpoint');
+      // alert('An error occurred while processing your payment. Please try again.');
     }
 
     // Reset form fields
@@ -208,6 +209,7 @@ const ParkingService = () => {
                       transform: 'translateY(-50%)',
                       color: '#888',
                     }}
+                    
                   ></i>
                   <input
                     type="number"
