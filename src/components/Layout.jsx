@@ -81,7 +81,9 @@ const Layout = () => {
 
       <header className="header">
         <div className="logo-container">
-          <img src={darkLogo} alt="Logo" className="logo" />
+          <Link to="/">
+            <img src={darkLogo} alt="NSSF Logo" className="logo" />
+          </Link>
         </div>
 
         <div className="header-right">
@@ -122,7 +124,7 @@ const Layout = () => {
                 {notifications.length > 4 && (
                   <div className="notification-footer">
                     <Link 
-                      to="/notification" 
+                      to="/payments" 
                       className="see-more-link" 
                       state={{ notifications }}
                     >

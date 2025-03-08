@@ -88,7 +88,7 @@ export default defineConfig({
 //   server: {
 //     proxy: {
 //       '/api': {
-//         target: 'https://nssf2.tililtechnologies.com', //replace the URL with /api directory text.
+//         target: 'URL', //replace the URL with /api directory text.
 //         changeOrigin: true, // Changes the origin of the request to the target URL
 //         rewrite: (path) => path.replace(/^\/api/, ''), // Rewrites '/api' to match the API path
 //       },

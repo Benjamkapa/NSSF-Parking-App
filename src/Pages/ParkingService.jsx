@@ -31,27 +31,12 @@ const ParkingService = () => {
         payment_method,
       };
 
-      // Handle M-Pesa payment initiation if applicable
-      if (payment_method === 'mpesa') {
-        const mpesaResponse = await axios.post(
-          'https://nssf2.tililtechnologies.com/initiate_parking_payment',
-          { phone, reg_no, amount },
-          { headers: { 'Content-Type': 'application/json' } }
-        );
+      // Define the URL for both M-Pesa and cash payments
+      const url = 'https://nssf2.tililtechnologies.com/initiate_parking_payment';
 
-        if (mpesaResponse.data.status === 'fail') {
-          alert('M-Pesa payment initiation failed!');
-        } else {
-          alert('STK Push to phone Successful!');
-        }
-      } else {
-        // Handle cash payment scenario
-        alert('Cash payment recorded successfully');
-      }
-
-       // Post data to the specified endpoint
-       const paymentResponse = await axios.post(
-        'http://localhost:9823/payments',
+      // Post data to the endpoint
+      const response = await axios.post(
+        url,
         paymentData,
         {
           headers: {
@@ -60,18 +45,27 @@ const ParkingService = () => {
         }
       );
 
+      if (response.data.status === 'fail') {
+        alert('Payment initiation failed!');
+      } else {
+        if (payment_method === 'mpesa') {
+          alert('STK Push to phone Successful!');
+        } else {
+          alert('Cash payment recorded successfully');
+        }
+      }
+
     } catch (error) {
       console.error('Error during payment:', error);
-      alert('Issue with SSE Endpoint');
-      // alert('An error occurred while processing your payment. Please try again.');
+      alert('Error during payment');
+    } finally {
+      // Reset form fields
+      setRegNo('');
+      setPhone('');
+      setAmount('');
+      setpayment_method('mpesa');
+      setIsSubmitting(false);
     }
-
-    // Reset form fields
-    setRegNo('');
-    setPhone('');
-    setAmount('');
-    setpayment_method('mpesa');
-    setIsSubmitting(false);
   };
 
   const buttonText = isSubmitting
@@ -209,7 +203,6 @@ const ParkingService = () => {
                       transform: 'translateY(-50%)',
                       color: '#888',
                     }}
-                    
                   ></i>
                   <input
                     type="number"
@@ -233,8 +226,8 @@ const ParkingService = () => {
             {/* Submit Button */}
             <tr>
               <td>
-                <button type="submit" disabled={isSubmitting}>
-                  {buttonText}
+                <button type="submit" className={isSubmitting ? 'loading' : ''} disabled={isSubmitting}>
+                  {isSubmitting ? <span className="loading-dots"><span>.</span><span>.</span><span>.</span></span> : buttonText}
                 </button>
               </td>
             </tr>

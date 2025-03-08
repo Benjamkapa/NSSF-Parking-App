@@ -125,3 +125,72 @@ input {
 a.back-icon{
   /* float:inline-start; */
 }
+
+
+
+
+
+
+
+
+/*LOADING ANIMATION*/
+.pagination-controls {
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  float: right;
+}
+
+.pagination-controls :hover {
+  border-radius: 10%;
+  opacity: 0.9;
+}
+
+.prev, .next {
+  color: #000;
+}
+
+.listingP {
+  display: flex;
+  flex-wrap: wrap;
+  /* margin-top: 1rem; */
+  gap: .5rem;
+  color: #000;
+  float: left;
+  outline: none;
+  justify-content: center;
+}
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: #333;
+  border-radius: 50%;
+  animation: bounce 0.3s infinite alternate;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  to {
+    opacity: 0.3;
+    transform: translateY(-10px);
+  }
+}
