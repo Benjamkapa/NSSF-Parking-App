@@ -114,7 +114,7 @@ input {
 /* marginInline:'10.2rem',maxWidth:"1024px", width:"100%" ,padding: "20px", fontFamily: "Arial, sans-serif", marginRight:"auto" */
 
 .back-icon:hover{
-  color: #000;
+  color: #000;NOTENO
   opacity: 0.5;
   background-color: rgb(211, 208, 208);
   transition: 0.6s ease-in-out;

@@ -12,15 +12,19 @@ const Payments = () => {
   const [sorting, setSorting] = useState("desc"); // asc or desc
   const [orderBy, setOrderBy] = useState("_id");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(20);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [loading, setLoading] = useState(true); // Loading state
   const tableRef = useRef();
   console.log(sorting);
 
   useEffect(() => {
+    const meta = document.createElement('meta');
+    meta.httpEquiv = "Content-Security-Policy";
+    meta.content = "default-src https: http:; script-src https: http: 'unsafe-inline'; style-src https: http: 'unsafe-inline'; img-src https: http: data:; font-src https: http: data:;";
+    document.getElementsByTagName('head')[0].appendChild(meta);
     setLoading(true); // Set loading to true when fetching starts
-
+  
     fetch(`http://178.18.254.142:4000/api/v1/nssf/payments?search=${searchQuery}&order=${sorting}&orderBy=${orderBy}&page=${page}&limit=${pageSize}`, {
       headers: {
         "Content-Type": "application/json",
@@ -64,6 +68,8 @@ const Payments = () => {
       direction = "asc";
     }
     setSortConfig({ key, direction });
+    setSorting(direction); // Update the sorting state variable
+    setOrderBy(key); // Update the orderBy state variable
   };
 
   const renderSortIndicator = (key) => {
@@ -188,13 +194,14 @@ const Payments = () => {
         <div
           ref={tableRef}
           style={{
+            marginTop: "1vh",
             overflowX: "auto",
             border: "1px solid #4F7200",
             borderRadius: "5px",
           }}
         >
           
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse"}}>
             <thead style={{ backgroundColor: "#0F7A41" }}>
               <tr>
                 <th style={tableHeaderStyle}>
@@ -243,11 +250,11 @@ const Payments = () => {
 
       {/* Pagination Controls */}
       <div className="pagination-controls">
-        <button style={{borderRadius:'1vh', height:'2.2em'}} className="prev" title="Previous" onClick={() => handlePageChange(page - 1)} disabled={currentPage === 1}>
+        <button style={{borderRadius:'1vh', height:'2.2em'}} className="prev" title="Previous Page" onClick={() => handlePageChange(page - 1)} disabled={currentPage === 1}>
           <FaChevronLeft style={{borderRadius:'50%', padding:'5px'}}/>
         </button>
         <span>Page {currentPage} of {totalPages} Pages</span>
-        <button style={{borderRadius:'1vh', height:'2.2em'}} className="next" title="Next" onClick={() => handlePageChange(page + 1)} disabled={currentPage === totalPages}>
+        <button style={{borderRadius:'1vh', height:'2.2em'}} className="next" title="Next Page" onClick={() => handlePageChange(page + 1)} disabled={currentPage === totalPages}>
           <FaChevronRight style={{borderRadius:'50%', padding:'5px'}}/>
         </button>
       </div>

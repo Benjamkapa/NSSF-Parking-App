@@ -72,26 +72,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://178.18.254.142:4000', // Target your HTTP API server
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/api/, '/api/v1/nssf'), // Rewrite the URL path
+  //     },
+  //   },
+  // },
 });
 
 
 
-// // Bypassing CORS by proxy server via the file --> for API test
-// import { defineConfig } from "vite";
-
-// export default defineConfig({
-//   resolve: {
-//     alias: {
-//       '@': '/src',
-//     },
-//   },
-//   server: {
-//     proxy: {
-//       '/api': {
-//         target: 'URL', //replace the URL with /api directory text.
-//         changeOrigin: true, // Changes the origin of the request to the target URL
-//         rewrite: (path) => path.replace(/^\/api/, ''), // Rewrites '/api' to match the API path
-//       },
-//     },
-//   },
-// });
