@@ -22,17 +22,32 @@ const ParkingService = () => {
       return;
     }
 
+    // Validation: Ensure number plate has between 5 and 10 characters
+    if (reg_no.length < 6 || reg_no.length > 8) {
+      alert('Number plate must be between 5 and 10 characters.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
+      let paymentData = null;
       // Prepare the data to be sent to the endpoint
-      const paymentData = {
-        reg_no,
-        phone: payment_method === 'mpesa' ? phone : null, // Only include phone if payment_method is M-Pesa
-        amount,
-        payment_method,
-      };
+      if (payment_method === 'mpesa') {
+        paymentData = {
+          reg_no,
+          phone,
+          amount,
+          payment_method,
+        };
+      } else {
+        paymentData = {
+          number_plate: reg_no,
+          amount,
+        };
+      }
 
       // Define the URL for both M-Pesa and cash payments
-      const url = 'https://nssf2.tililtechnologies.com/initiate_parking_payment';
+      const url = payment_method === 'mpesa' ? 'https://nssf2.tililtechnologies.com/initiate_parking_payment' : 'https://monitor.tililtech.com/api/v1/nssf/record-payment';
 
       // Post data to the endpoint
       const response = await axios.post(
@@ -49,15 +64,45 @@ const ParkingService = () => {
         alert('Payment initiation failed!');
       } else {
         if (payment_method === 'mpesa') {
-          alert('STK Push to phone Successful!');
+          const alertMessage = 'STK push to phone initiated successfully';
+          const alertElement = document.createElement('div');
+          alertElement.textContent = alertMessage;
+          alertElement.style.position = 'fixed';
+          alertElement.style.top = '10px';
+          alertElement.style.left = '50%';
+          alertElement.style.transform = 'translateX(-50%)';
+          alertElement.style.outline = 'solid 1px #000';
+          alertElement.style.backgroundColor = 'rgb(76, 175, 80, 0.1)'
+          alertElement.style.color = '#000';
+          alertElement.style.padding = '10px';
+          alertElement.style.borderRadius = '5px';
+          document.body.appendChild(alertElement);
+
+          setTimeout(() => {
+            document.body.removeChild(alertElement);
+          }, 7000);
         } else {
-          alert('Cash payment recorded successfully');
+          const alertMessage = 'Cash payment recorded successfully';
+          const alertElement = document.createElement('div');
+          alertElement.textContent = alertMessage;
+          alertElement.style.position = 'fixed';
+          alertElement.style.top = '10px';
+          alertElement.style.left = '50%';
+          alertElement.style.transform = 'translateX(-50%)';
+          alertElement.style.outline = 'solid 1px #000';
+          alertElement.style.color = '#000';
+          alertElement.style.backgroundColor = 'rgb(76, 175, 80, 0.1)'
+          alertElement.style.padding = '10px';
+          alertElement.style.borderRadius = '5px';
+          document.body.appendChild(alertElement);
+
+          setTimeout(() => {
+            document.body.removeChild(alertElement);
+          }, 5000);
         }
       }
-
     } catch (error) {
       console.error('Error during payment:', error);
-      alert('Error during payment');
     } finally {
       // Reset form fields
       setRegNo('');
@@ -120,7 +165,6 @@ const ParkingService = () => {
                 </div>
               </td>
             </tr>
-            <br />
             {/* Vehicle Registration Number */}
             <tr>
               <td>
@@ -222,12 +266,19 @@ const ParkingService = () => {
                 </div>
               </td>
             </tr>
-            <br />
             {/* Submit Button */}
             <tr>
               <td>
                 <button type="submit" className={isSubmitting ? 'loading' : ''} disabled={isSubmitting}>
-                  {isSubmitting ? <span className="loading-dots"><span>.</span><span>.</span><span>.</span></span> : buttonText}
+                  {isSubmitting ? (
+                    <div className="loading-indicator">
+                      <div className="dot"></div>
+                      <div className="dot"></div>
+                      <div className="dot"></div>
+                    </div>
+                  ) : (
+                    buttonText
+                  )}
                 </button>
               </td>
             </tr>

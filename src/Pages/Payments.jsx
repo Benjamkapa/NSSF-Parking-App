@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { use } from "react";
 import { FaFilter, FaPrint, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -12,20 +13,50 @@ const Payments = () => {
   const [sorting, setSorting] = useState("desc"); // asc or desc
   const [orderBy, setOrderBy] = useState("_id");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [loading, setLoading] = useState(true); // Loading state
   const tableRef = useRef();
-  console.log(sorting);
+  // console.log(searchQuery);
+  // console.log(sorting);
+    
 
-  useEffect(() => {
-    const meta = document.createElement('meta');
-    meta.httpEquiv = "Content-Security-Policy";
-    meta.content = "default-src https: http:; script-src https: http: 'unsafe-inline'; style-src https: http: 'unsafe-inline'; img-src https: http: data:; font-src https: http: data:;";
-    document.getElementsByTagName('head')[0].appendChild(meta);
-    setLoading(true); // Set loading to true when fetching starts
+  // useEffect(() => {
+  //   const meta = document.createElement('meta');
+  //   meta.httpEquiv = "Content-Security-Policy";
+  //   meta.content = "default-src https: http:; script-src https: http: 'unsafe-inline'; style-src https: http: 'unsafe-inline'; img-src https: http: data:; font-src https: http: data:;";
+  //   document.getElementsByTagName('head')[0].appendChild(meta);
+  //   setLoading(true); // Set loading to true when fetching starts
   
-    fetch(`http://178.18.254.142:4000/api/v1/nssf/payments?search=${searchQuery}&order=${sorting}&orderBy=${orderBy}&page=${page}&limit=${pageSize}`, {
+  //   fetch(`https://monitor.tililtech.com/api/v1/nssf/payments?search=${searchQuery}&order=${sorting}&orderBy=${orderBy}&page=${page}&limit=${pageSize}`, {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       // console.log("Payment transactions fetched successfully:", data);
+  //       setTransactionData(data.payments);
+  //       setTotalTransactions(data.total); // Set total number of transactions
+  //       setTotalPages(data.totalPages); // Set total number of pages
+  //       setCurrentPage(data.currentPage); // Set the current page data
+  //       setLoading(false); // Set loading to false when data is fetched
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching payment transactions:", error);
+  //       setLoading(false); // Set loading to false if an error occurs
+  //     });
+  // }, [searchQuery, sorting, orderBy, page, pageSize]);
+
+  const fetchTransactions = useCallback(() => {
+    setLoading(true); // Set loading to true when fetching starts
+
+    fetch(`https://monitor.tililtech.com/api/v1/nssf/payments?search=${searchQuery}&order=${sorting}&orderBy=${orderBy}&page=${page}&limit=${pageSize}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -37,10 +68,11 @@ const Payments = () => {
         return response.json();
       })
       .then((data) => {
-        console.log("Payment transactions fetched successfully:", data);
+        // console.log("Payment transactions fetched successfully:", data);
         setTransactionData(data.payments);
         setTotalTransactions(data.total); // Set total number of transactions
-        setTotalPages(data.totalPages); // Set total number of pages
+        setTotalPages(data.totalPages); // Set total number of 
+        setTotalTransactions
         setCurrentPage(data.currentPage); // Set the current page data
         setLoading(false); // Set loading to false when data is fetched
       })
@@ -48,7 +80,55 @@ const Payments = () => {
         console.error("Error fetching payment transactions:", error);
         setLoading(false); // Set loading to false if an error occurs
       });
-  }, [searchQuery, sorting, orderBy, page, pageSize]);
+  }
+  , [searchQuery, sorting, orderBy, page, pageSize]);
+
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return function(...args) {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    }; 
+  };
+
+  // Debounce the fetchTransactions function
+  const debouncedFetchTransactions = useCallback(debounce(fetchTransactions, 300), [fetchTransactions]);
+
+  useEffect(() => {
+    debouncedFetchTransactions();
+  }
+  , [debouncedFetchTransactions]);
+
+  // Event listener for before and after print
+  useEffect(() => {
+    const handleBeforePrint = () => {
+      const printContents = tableRef.current.innerHTML;
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+    };
+
+    const handleAfterPrint = () => {
+      window.location.reload();   
+    };
+
+    window.addEventListener("beforeprint", handleBeforePrint);
+    window.addEventListener("afterprint", handleAfterPrint);
+
+    return () => {
+      window.removeEventListener("beforeprint", handleBeforePrint);
+      window.removeEventListener("afterprint", handleAfterPrint);
+    };
+  }, []);
+
+    
+
+
 
   // Print function
   const handlePrint = () => {
@@ -57,6 +137,7 @@ const Payments = () => {
     document.body.innerHTML = printContents;
     window.print();
     document.body.innerHTML = originalContents;
+    // console.log("Printing...");
   };
 
   // Sorting function
@@ -90,7 +171,7 @@ const Payments = () => {
   // Function to format phone number
   const formatPhoneNumber = (phoneNumber) => {
     if (!phoneNumber) return "";
-    return `${phoneNumber.slice(0, 3)}****${phoneNumber.slice(-2)}`;
+    return `${phoneNumber.slice(0, 4)}****${phoneNumber.slice(-3)}`;
   };
 
   return (
@@ -175,8 +256,9 @@ const Payments = () => {
           value={pageSize} onChange={handlePageSizeChange}>
           <option value={5}>5</option>
           <option value={10}>10</option>
-          <option value={15}>15</option>
+          {/* <option value={15}>15</option> */}
           <option value={20}>20</option>
+          {/* <option value={20}>List All</option> */}
         </select>
         Entries
       </div>
@@ -190,34 +272,24 @@ const Payments = () => {
           <div className="dot"></div>
         </div>
       ) : (
-        
-        <div
-          ref={tableRef}
-          style={{
-            marginTop: "1vh",
-            overflowX: "auto",
-            border: "1px solid #4F7200",
-            borderRadius: "5px",
-          }}
-        >
-          
+        <div ref={tableRef} style={{marginTop: "1vh", overflowX: "auto", border: "1px solid #4F7200", borderRadius: "5px"}}> 
           <table style={{ width: "100%", borderCollapse: "collapse"}}>
             <thead style={{ backgroundColor: "#0F7A41" }}>
               <tr>
                 <th style={tableHeaderStyle}>
                   Type
                 </th>
-                <th style={tableHeaderStyle} onClick={() => handleSort("mpesa_ref")}>
-                  M-Pesa Reference Number{renderSortIndicator("mpesa_ref")}
+                <th style={tableHeaderStyle} >
+                  M-Pesa Ref
                 </th>
-                <th style={tableHeaderStyle} onClick={() => handleSort("amount")}>
-                  Amount{renderSortIndicator("amount")}
+                <th style={tableHeaderStyle}>
+                  Amount
                 </th>
-                <th style={tableHeaderStyle} onClick={() => handleSort("phone_number")}>
-                  Phone Number{renderSortIndicator("phone_number")}
+                <th style={tableHeaderStyle}>
+                  Phone Number
                 </th>
-                <th style={tableHeaderStyle} onClick={() => handleSort("number_plate")}>
-                  Number Plate{renderSortIndicator("number_plate")}
+                <th style={tableHeaderStyle}>
+                  Number Plate
                 </th>
                 <th style={tableHeaderStyle} onClick={() => handleSort("updatedAt")}>
                   Time{renderSortIndicator("updatedAt")}
@@ -229,9 +301,9 @@ const Payments = () => {
                 transactions.map((transaction, index) => (
                   <tr key={index}>
                     <td style={tableCellStyle}>{transaction.mpesa_ref ? "M-Pesa" : "Cash"}</td>
-                    <td style={tableCellStyle}>{transaction.mpesa_ref}</td>
+                    <td style={tableCellStyle}>{transaction.mpesa_ref ? transaction.mpesa_ref : "N/A"}</td>
                     <td style={tableCellStyle}>{`Ksh. ${transaction.amount}`}</td>
-                    <td style={tableCellStyle}>{formatPhoneNumber(transaction.phone_number)}</td>
+                    <td style={tableCellStyle}>{transaction.phone_number ? formatPhoneNumber(transaction.phone_number): "N/A"}</td>
                     <td style={tableCellStyle}>{transaction.number_plate}</td>
                     <td style={tableCellStyle}>{formatDate(transaction.updatedAt)}</td>
                   </tr>

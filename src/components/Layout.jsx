@@ -35,7 +35,7 @@ const Layout = () => {
   };
 
   useEffect(() => {
-    const eventSource = new EventSource("http://localhost:9823/events"); //shall the SSE notifications being displayed only be from the app or also the USSD?
+    const eventSource = new EventSource("http://localhost:9823/events");
 
     eventSource.onmessage = (event) => {
       try {

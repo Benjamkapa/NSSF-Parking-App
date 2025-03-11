@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
+import Home from "./Pages/Home";
 // import ParkingForm from "./pages/ParkingForm";
 import ParkingService from "./Pages/ParkingService"; // Import new pages
 import Vehicle from "./pages/Vehicle";
-import Payments from "./pages/Payments";
+import Payments from "./Pages/Payments";
 // import AccountInformation from "./pages/AccountInformation";
 import About from "./pages/About";
 import Notification from "./pages/Notification";

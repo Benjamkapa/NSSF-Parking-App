@@ -61,7 +61,7 @@ body {
   
   /* Submit button styles */
   button[type="submit"] {
-    background-color: #0F7A41 ;
+    background-color: transparent ;
     /* outline: 1px solid #4CAF50; */
     color:#000 ;
     height: 40px;
@@ -76,7 +76,7 @@ body {
   
   /* Hover effect for the submit button */
   button[type="submit"]:hover {
-    background-color: #BFD62E;
+    background-color: #0F7A41;
   }
   
   /* Text styles for the table */
@@ -88,6 +88,7 @@ body {
   }
   
   td {
+    padding-block: 5px; 
     /* padding: 8px; */
     font-size: 1rem;
     color: #555;
