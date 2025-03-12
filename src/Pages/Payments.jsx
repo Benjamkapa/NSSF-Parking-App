@@ -11,7 +11,7 @@ const Payments = () => {
   const [currentPage, setCurrentPage] = useState(0); // Hold state for the current page
   const [searchQuery, setSearchQuery] = useState("");
   const [sorting, setSorting] = useState("desc"); // asc or desc
-  const [orderBy, setOrderBy] = useState("_id");
+  const [orderBy, setOrderBy] = useState("createdAt");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
@@ -125,10 +125,6 @@ const Payments = () => {
       window.removeEventListener("afterprint", handleAfterPrint);
     };
   }, []);
-
-    
-
-
 
   // Print function
   const handlePrint = () => {
@@ -273,7 +269,7 @@ const Payments = () => {
         </div>
       ) : (
         <div ref={tableRef} style={{marginTop: "1vh", overflowX: "auto", border: "1px solid #4F7200", borderRadius: "5px"}}> 
-          <table style={{ width: "100%", borderCollapse: "collapse"}}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead style={{ backgroundColor: "#0F7A41" }}>
               <tr>
                 <th style={tableHeaderStyle}>
@@ -291,8 +287,8 @@ const Payments = () => {
                 <th style={tableHeaderStyle}>
                   Number Plate
                 </th>
-                <th style={tableHeaderStyle} onClick={() => handleSort("updatedAt")}>
-                  Time{renderSortIndicator("updatedAt")}
+                <th style={tableHeaderStyle} onClick={() => handleSort("createdAt")}>
+                  Time{renderSortIndicator("createdAt")}
                 </th>
               </tr>
             </thead>
