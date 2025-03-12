@@ -111,8 +111,8 @@ input {
   margin:auto;
 }
 
-tbody {
-  background-color: rgb(167, 194, 197, 0.4);
+tbody, form{
+  background-color: rgb(167, 194, 197, 0.2);
 }
 
 /* marginInline:'10.2rem',maxWidth:"1024px", width:"100%" ,padding: "20px", fontFamily: "Arial, sans-serif", marginRight:"auto" */

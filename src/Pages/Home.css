@@ -57,10 +57,12 @@
   display: flex;
   justify-content: center;
   padding: 2rem;
+  background-color: rgb(167, 194, 197, 0.8);
   border-radius: 20px;
   transition: ease-in-out transform 0.4s;
   cursor: pointer;
-  outline: solid 2px rgb(1, 122, 58);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  /* outline: solid 2px rgb(1, 122, 58); */
   min-height: 6rem;
   text-align: center;
 }

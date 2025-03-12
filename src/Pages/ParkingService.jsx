@@ -24,7 +24,26 @@ const ParkingService = () => {
 
     // Validation: Ensure number plate has between 5 and 10 characters
     if (reg_no.length < 6 || reg_no.length > 8) {
-      alert('Number plate must be between 5 and 10 characters.');
+      const alertMessage = 'Number plate must have between 6 and 8 characters';
+      const alertElement = document.createElement('div');
+      alertElement.textContent = alertMessage;
+      alertElement.style.position = 'fixed';
+      alertElement.style.top = '10px';
+      alertElement.style.left = '50%';
+      alertElement.style.transform = 'translateX(-50%)';
+      // alertElement.style.outline = 'solid 1px #000';
+      alertElement.style.color = '#000';
+      alertElement.style.fontStyle = 'bold';  
+      alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.6)';
+      alertElement.style.backgroundColor = 'rgba(221, 80, 80, 0.4)';
+      alertElement.style.padding = '10px';
+      alertElement.style.borderRadius = '5px';
+      document.body.appendChild(alertElement);
+
+      setTimeout(() => {
+        document.body.removeChild(alertElement);
+      }, 2000);
+
       setIsSubmitting(false);
       return;
     }
@@ -71,8 +90,9 @@ const ParkingService = () => {
           alertElement.style.top = '10px';
           alertElement.style.left = '50%';
           alertElement.style.transform = 'translateX(-50%)';
-          alertElement.style.outline = 'solid 1px #000';
-          alertElement.style.backgroundColor = 'rgb(76, 175, 80, 0.1)'
+          // alertElement.style.outline = 'solid 1px #000';
+          alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.2)';
+          alertElement.style.backgroundColor = 'rgb(167, 194, 197, 0.8);'
           alertElement.style.color = '#000';
           alertElement.style.padding = '10px';
           alertElement.style.borderRadius = '5px';
@@ -91,7 +111,8 @@ const ParkingService = () => {
           alertElement.style.transform = 'translateX(-50%)';
           alertElement.style.outline = 'solid 1px #000';
           alertElement.style.color = '#000';
-          alertElement.style.backgroundColor = 'rgb(76, 175, 80, 0.1)'
+          alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.2)';
+          alertElement.style.backgroundColor = 'rgb(167, 194, 197, 0.8);'
           alertElement.style.padding = '10px';
           alertElement.style.borderRadius = '5px';
           document.body.appendChild(alertElement);
