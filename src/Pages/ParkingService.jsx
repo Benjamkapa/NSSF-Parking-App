@@ -27,22 +27,22 @@ const ParkingService = () => {
       const alertMessage = 'Number plate must have between 6 and 8 characters';
       const alertElement = document.createElement('div');
       alertElement.textContent = alertMessage;
-      alertElement.style.position = 'fixed';
-      alertElement.style.top = '10px';
-      alertElement.style.left = '50%';
+      alertElement.style.position = 'absolute';
+      alertElement.style.top = '5rem';
+      alertElement.style.left = '55%';
+      alertElement.style.width = '40%';
       alertElement.style.transform = 'translateX(-50%)';
-      // alertElement.style.outline = 'solid 1px #000';
-      alertElement.style.color = '#000';
-      alertElement.style.fontStyle = 'bold';  
-      alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.6)';
+      alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.2)';
       alertElement.style.backgroundColor = 'rgba(221, 80, 80, 0.4)';
+      alertElement.style.color = 'red';
       alertElement.style.padding = '10px';
       alertElement.style.borderRadius = '5px';
       document.body.appendChild(alertElement);
 
       setTimeout(() => {
         document.body.removeChild(alertElement);
-      }, 2000);
+      }, 5000);
+      
 
       setIsSubmitting(false);
       return;
@@ -83,36 +83,36 @@ const ParkingService = () => {
         alert('Payment initiation failed!');
       } else {
         if (payment_method === 'mpesa') {
-          const alertMessage = 'STK push to phone initiated successfully';
+          const alertMessage = 'STK Push to Phone Initiated Successfully';
           const alertElement = document.createElement('div');
           alertElement.textContent = alertMessage;
-          alertElement.style.position = 'fixed';
-          alertElement.style.top = '10px';
-          alertElement.style.left = '50%';
+          alertElement.style.position = 'absolute';
+          alertElement.style.top = '5rem';
+          alertElement.style.left = '55%';
+          alertElement.style.width = '40%';
           alertElement.style.transform = 'translateX(-50%)';
-          // alertElement.style.outline = 'solid 1px #000';
           alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.2)';
-          alertElement.style.backgroundColor = 'rgb(167, 194, 197, 0.8);'
-          alertElement.style.color = '#000';
+          alertElement.style.backgroundColor = 'rgb(167, 194, 197, 0.8)';
+          alertElement.style.color = 'rgb(8, 122, 63)';
           alertElement.style.padding = '10px';
           alertElement.style.borderRadius = '5px';
           document.body.appendChild(alertElement);
 
           setTimeout(() => {
             document.body.removeChild(alertElement);
-          }, 7000);
+          }, 5000);
         } else {
-          const alertMessage = 'Cash payment recorded successfully';
+          const alertMessage = 'Cash Payment Recorded Successfully';
           const alertElement = document.createElement('div');
           alertElement.textContent = alertMessage;
-          alertElement.style.position = 'fixed';
-          alertElement.style.top = '10px';
-          alertElement.style.left = '50%';
+          alertElement.style.position = 'absolute';
+          alertElement.style.top = '5rem';
+          alertElement.style.left = '55%';
+          alertElement.style.width = '40%';
           alertElement.style.transform = 'translateX(-50%)';
-          alertElement.style.outline = 'solid 1px #000';
-          alertElement.style.color = '#000';
           alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.2)';
-          alertElement.style.backgroundColor = 'rgb(167, 194, 197, 0.8);'
+          alertElement.style.backgroundColor = 'rgb(167, 194, 197, 0.8)';
+          alertElement.style.color = 'rgb(8, 122, 63)';
           alertElement.style.padding = '10px';
           alertElement.style.borderRadius = '5px';
           document.body.appendChild(alertElement);
@@ -142,7 +142,7 @@ const ParkingService = () => {
 
   return (
     <div>
-      <div className="p-6 max-w-3xl mx-auto">
+      <div className="Parking-service_bd">
         <Link
           to="/"
           className="back-icon"
@@ -298,7 +298,7 @@ const ParkingService = () => {
                       <div className="dot"></div>
                     </div>
                   ) : (
-                    buttonText
+                    buttonText 
                   )}
                 </button>
               </td>

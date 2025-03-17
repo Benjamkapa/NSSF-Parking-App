@@ -182,3 +182,8 @@ body {
     transform: scale(2);
   }
 }
+
+.Parking-service_bd {
+  position: fixed;
+  width: 100%;
+}
