@@ -300,7 +300,7 @@ const Payments = () => {
                     <td style={tableCellStyle}>{transaction.mpesa_ref ? transaction.mpesa_ref : "N/A"}</td>
                     <td style={tableCellStyle}>{`Ksh. ${transaction.amount}`}</td>
                     <td style={tableCellStyle}>{transaction.phone_number ? formatPhoneNumber(transaction.phone_number): "N/A"}</td>
-                    <td style={tableCellStyle}>{transaction.number_plate}</td>
+                    <td style={tableCellStyle}>{transaction.number_plate?.toUpperCase()}</td>
                     <td style={tableCellStyle}>{formatDate(transaction.updatedAt)}</td>
                   </tr>
                 ))

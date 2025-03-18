@@ -14,16 +14,19 @@ const ParkingService = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
+    // Convert vehicle number plate to uppercase
+    const uppercasedRegNo = reg_no.toUpperCase();
+  
     // Validation: Ensure required fields are filled
-    if (!reg_no || !amount || (payment_method === 'mpesa' && !phone)) {
+    if (!uppercasedRegNo || !amount || (payment_method === 'mpesa' && !phone)) {
       alert('Please fill out all required fields.');
       setIsSubmitting(false);
       return;
     }
-
+  
     // Validation: Ensure number plate has between 5 and 10 characters
-    if (reg_no.length < 6 || reg_no.length > 8) {
+    if (uppercasedRegNo.length < 6 || uppercasedRegNo.length > 8) {
       const alertMessage = 'Number plate must have between 6 and 8 characters';
       const alertElement = document.createElement('div');
       alertElement.textContent = alertMessage;
@@ -38,36 +41,36 @@ const ParkingService = () => {
       alertElement.style.padding = '10px';
       alertElement.style.borderRadius = '5px';
       document.body.appendChild(alertElement);
-
+  
       setTimeout(() => {
         document.body.removeChild(alertElement);
-      }, 5000);
+      }, 4000);
       
-
+  
       setIsSubmitting(false);
       return;
     }
-
+  
     try {
       let paymentData = null;
       // Prepare the data to be sent to the endpoint
       if (payment_method === 'mpesa') {
         paymentData = {
-          reg_no,
+          reg_no: uppercasedRegNo,
           phone,
           amount,
           payment_method,
         };
       } else {
         paymentData = {
-          number_plate: reg_no,
+          number_plate: uppercasedRegNo,
           amount,
         };
       }
-
+  
       // Define the URL for both M-Pesa and cash payments
       const url = payment_method === 'mpesa' ? 'https://nssf2.tililtechnologies.com/initiate_parking_payment' : 'https://monitor.tililtech.com/api/v1/nssf/record-payment';
-
+  
       // Post data to the endpoint
       const response = await axios.post(
         url,
@@ -78,7 +81,7 @@ const ParkingService = () => {
           },
         }
       );
-
+  
       if (response.data.status === 'fail') {
         alert('Payment initiation failed!');
       } else {
@@ -97,7 +100,7 @@ const ParkingService = () => {
           alertElement.style.padding = '10px';
           alertElement.style.borderRadius = '5px';
           document.body.appendChild(alertElement);
-
+  
           setTimeout(() => {
             document.body.removeChild(alertElement);
           }, 5000);
@@ -116,10 +119,10 @@ const ParkingService = () => {
           alertElement.style.padding = '10px';
           alertElement.style.borderRadius = '5px';
           document.body.appendChild(alertElement);
-
+  
           setTimeout(() => {
             document.body.removeChild(alertElement);
-          }, 5000);
+          }, 4000);
         }
       }
     } catch (error) {
