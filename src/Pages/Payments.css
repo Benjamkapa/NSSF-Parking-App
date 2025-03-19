@@ -1,0 +1,40 @@
+.datePickers {
+    display: flex;
+    gap: 1em;
+  }
+  
+  .datePickerWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .filterIcon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    z-index: 1;
+  }
+  
+  .datePickerInput {
+    padding: 7px 30px;
+    /* border-radius: 10em; */
+    box-shadow: 0 1px 5px 1px;
+    border: none;
+    color: #000;
+    width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    .datePickerInput {
+      width: 69%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .datePickerInput {
+      width: 55%;
+    }
+  }

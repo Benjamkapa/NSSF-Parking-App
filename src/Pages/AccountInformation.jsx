@@ -92,6 +92,8 @@ const AccountInformation = () => {
 
             {/* Print Button */}
             <div className="printUtil">
+              
+
               <FaPrint style={{ marginRight: "10px", color: "#888" }} />
               <button
                 onClick={handlePrint}

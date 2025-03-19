@@ -130,8 +130,25 @@ a.back-icon{
   /* float:inline-start; */
 }
 
+.date-range-picker{
+  display: flex;
+  /* justify-content: center; */
+  gap: 1rem;
+  /* border-radius: 50; */
+  /* width: 12em; */
+  /* padding: 7px 30px; */
+  width: 50%;
+  /* margin-left: 2em; */
+  /* border-radius: 50px; */
+  /* border: 1px solid #000;    */
+}
 
-
+.start {
+  border: 1px solid #000;
+  border-radius: 10em;
+  /* padding: 5px; */
+  width: 100%; 
+}
 
 
 
@@ -159,6 +176,7 @@ a.back-icon{
 
 .listingP {
   display: flex;
+  float: left;
   flex-wrap: wrap;
   /* margin-top: 1rem; */
   gap: .5rem;
@@ -198,3 +216,9 @@ a.back-icon{
     transform: translateY(-10px);
   }
 }
+
+/* 
+.datePicker{
+  display: flexbox;
+  margin-inline: 1rem;
+} */
