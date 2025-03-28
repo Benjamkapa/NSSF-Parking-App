@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import AlertMessage from './AlertMessage'; // Import the new AlertMessage component
+
 import axios from 'axios';
 import './Input.css';
 import { Link } from 'react-router-dom';
@@ -83,57 +85,24 @@ const ParkingService = () => {
       );
   
       if (response.data.status === 'fail') {
-        alert('Payment initiation failed!');
+        setAlert({ message: 'Payment initiation failed!', type: 'error' });
       } else {
-        if (payment_method === 'mpesa') {
-          const alertMessage = 'STK Push to Phone Initiated Successfully';
-          const alertElement = document.createElement('div');
-          alertElement.textContent = alertMessage;
-          alertElement.style.position = 'absolute';
-          alertElement.style.top = '5rem';
-          alertElement.style.left = '55%';
-          alertElement.style.width = '40%';
-          alertElement.style.transform = 'translateX(-50%)';
-          alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.2)';
-          alertElement.style.backgroundColor = 'rgb(167, 194, 197, 0.8)';
-          alertElement.style.color = 'rgb(8, 122, 63)';
-          alertElement.style.padding = '10px';
-          alertElement.style.borderRadius = '5px';
-          document.body.appendChild(alertElement);
-  
-          setTimeout(() => {
-            document.body.removeChild(alertElement);
-          }, 5000);
-        } else {
-          const alertMessage = 'Cash Payment Recorded Successfully';
-          const alertElement = document.createElement('div');
-          alertElement.textContent = alertMessage;
-          alertElement.style.position = 'absolute';
-          alertElement.style.top = '5rem';
-          alertElement.style.left = '55%';
-          alertElement.style.width = '40%';
-          alertElement.style.transform = 'translateX(-50%)';
-          alertElement.style.boxShadow = '0 0 10px  rgb(0, 0, 0, 0.2)';
-          alertElement.style.backgroundColor = 'rgb(167, 194, 197, 0.8)';
-          alertElement.style.color = 'rgb(8, 122, 63)';
-          alertElement.style.padding = '10px';
-          alertElement.style.borderRadius = '5px';
-          document.body.appendChild(alertElement);
-  
-          setTimeout(() => {
-            document.body.removeChild(alertElement);
-          }, 4000);
-        }
+        const successMessage = payment_method === 'mpesa' 
+          ? 'STK Push to Phone Initiated Successfully' 
+          : 'Cash Payment Recorded Successfully';
+        setAlert({ message: successMessage, type: 'success' });
       }
+
     } catch (error) {
       console.error('Error during payment:', error);
     } finally {
-      // Reset form fields
       setRegNo('');
       setPhone('');
       setAmount('');
       setpayment_method('mpesa');
       setIsSubmitting(false);
+      setTimeout(() => setAlert({ message: '', type: '' }), 5000); // Clear alert after 5 seconds
+
     }
   };
 
@@ -161,8 +130,10 @@ const ParkingService = () => {
         >
           <FaChevronLeft style={{ fontSize: '1rem' }} />
         </Link>
-        <h1 className="text-2xl font-bold mb-4">Parking</h1>
-        <form onSubmit={handleSubmit} autoComplete="off">
+        <h1 className="text-2xl font-bold mb-4">Pay Parking</h1>
+        <form onSubmit={handleSubmit} autoComplete="off"> 
+          <AlertMessage message={alert.message} type={alert.type} /> {/* Display alert message */}
+
           <table>
             {/* Payment Method Selection */}
             <tr>

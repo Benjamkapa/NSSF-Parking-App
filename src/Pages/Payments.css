@@ -38,3 +38,12 @@
       width: 55%;
     }
   }
+
+
+  .searcher:hover {
+    box-shadow: 2px 1px 5px 1px #bbb;
+    background-color: #bbb;
+    transition: ease-in-out .2s;
+    border-radius: 10em;
+  }
+

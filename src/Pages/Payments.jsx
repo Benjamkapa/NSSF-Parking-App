@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { FaPrint, FaChevronLeft, FaChevronRight, FaSearch, FaFilter } from "react-icons/fa";
+import { FaPrint, FaChevronLeft, FaChevronRight, FaFilter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./Payments.css"; // Import the CSS file
+import "./Payments.css"; 
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { GoSearch } from "react-icons/go";
 
 const Payments = () => {
   const [transactions, setTransactionData] = useState([]);
@@ -167,7 +170,8 @@ const Payments = () => {
           className="filterUtil"
           style={{ position: "relative", maxWidth: "1120px", display: "flex", gap: "5px" }}
         >
-          <FaSearch
+          <GoSearch
+          size={17}
             style={{
               position: "absolute",
               left: "10px",
@@ -176,6 +180,7 @@ const Payments = () => {
               color: "#444",
             }}
           />
+          <div class="searcher">
           <input
             type="text"
             placeholder="Search..."
@@ -184,50 +189,13 @@ const Payments = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               float: "left",
+              backgroundColor:'#ccc',
               padding: "7px 30px",
-              boxShadow: "0 1px 5px 1px",
               width: "100%",
               borderRadius: "10em",
               border: "none",
             }}
           />
-        </div>
-        <div className="datePickers">
-          <div className="datePickerWrapper">
-            <FaFilter className="filterIcon" />
-            <DatePicker
-              selected={startDate}
-              title="From"
-              onChange={handleStartDateChange}
-              placeholderText="  From ..."
-              customInput={
-                <input
-                  className="datePickerInput"
-                    style={{
-                      borderTopLeftRadius: "10em",
-                      borderBottomLeftRadius: "10em",
-                    }}
-                />
-              }
-            />
-          </div>
-          <div className="datePickerWrapper">
-            <FaFilter className="filterIcon" />
-            <DatePicker
-              selected={endDate}
-              onChange={handleEndDateChange}
-              placeholderText="  To ..."
-              title="To"
-              customInput={
-                <input
-                  className="datePickerInput"
-                    style={{
-                      borderTopRightRadius: "10em",
-                      borderBottomRightRadius: "10em",
-                    }}
-                />
-              }
-            />
           </div>
         </div>
       </div>
@@ -252,7 +220,6 @@ const Payments = () => {
           style={{
             padding: "2px 8px",
             paddingLeft: "15px",
-            boxShadow: '0 1px 5px 1px #000',
             paddingRight: "5px",
             outline: "none",
             fontSize: "1rem",
@@ -265,11 +232,7 @@ const Payments = () => {
       </div>
 
       {loading ? (
-        <div className="loading-indicator">
-          <div className="dot"></div>
-          <div className="dot"></div>
-          <div className="dot"></div>
-        </div>
+        <Skeleton count={20} height={40} />
       ) : (
         <div
           ref={tableRef}
@@ -296,7 +259,7 @@ const Payments = () => {
             <tbody>
               {transactions.length > 0 ? (
                 transactions.map((transaction, index) => (
-                  <tr key={index}>
+                  <tr key={index} className={`text-center ${index % 2 === 0 ? 'bg-alternate' : ''}`}>
                     <td style={tableCellStyle}>{transaction.mpesa_ref ? "M-Pesa" : "Cash"}</td>
                     <td style={tableCellStyle}>{transaction.mpesa_ref ? transaction.mpesa_ref : "N/A"}</td>
                     <td style={tableCellStyle}>{`Ksh. ${transaction.amount}`}</td>
@@ -319,7 +282,7 @@ const Payments = () => {
 
       <div className="pagination-controls">
         <button
-          style={{ borderRadius: "2vh", height: "2.2em", boxShadow: '0 1px 5px 1px #000', }}
+          style={{ borderRadius: "2vh", height: "2.2em"}}
           className="prev"
           title="Previous Page"
           onClick={() => handlePageChange(currentPage - 1)}
@@ -331,7 +294,7 @@ const Payments = () => {
           Page {currentPage} of {totalPages} Pages
         </span>
         <button
-          style={{ borderRadius: "2vh", height: "2.2em", boxShadow: '0 1px 5px 1px #000', }}
+          style={{ borderRadius: "2vh", height: "2.2em"}}
           className="next"
           title="Next Page"
           onClick={() => handlePageChange(currentPage + 1)}
