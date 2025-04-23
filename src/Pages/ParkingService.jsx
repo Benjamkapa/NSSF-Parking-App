@@ -4,7 +4,7 @@ import AlertMessage from './AlertMessage'; // Import the new AlertMessage compon
 import axios from 'axios';
 import './Input.css';
 import { Link } from 'react-router-dom';
-import { FaChevronLeft } from 'react-icons/fa6';
+import { GoArrowLeft } from 'react-icons/go';
 
 const ParkingService = () => {
   const [payment_method, setpayment_method] = useState('mpesa');
@@ -128,7 +128,7 @@ const ParkingService = () => {
             display: 'inline-flex',
           }}
         >
-          <FaChevronLeft style={{ fontSize: '1rem' }} />
+          <GoArrowLeft style={{ fontSize: '1rem' }} />
         </Link>
         <h1 className="text-2xl font-bold mb-4">Pay Parking</h1>
         <form onSubmit={handleSubmit} autoComplete="off"> 

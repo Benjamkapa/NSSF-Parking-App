@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./Payments.css"; 
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { GoSearch } from "react-icons/go";
+import { GoSearch, GoChevronLeft, GoArrowLeft } from "react-icons/go";
 
 const Payments = () => {
   const [transactions, setTransactionData] = useState([]);
@@ -154,7 +154,7 @@ const Payments = () => {
           display: "inline-flex",
         }}
       >
-        <FaChevronLeft style={{ fontSize: "1rem", borderRadius: "50%" }} />
+        <GoArrowLeft style={{ fontSize: "1rem" }} />
       </Link>
       <h2>Payments</h2>
       <div
