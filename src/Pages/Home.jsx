@@ -108,7 +108,7 @@ const Home = () => {
         className="line-graph-section"
         style={{
           marginTop: '50px',
-          maxWidth: '660px',
+          maxWidth: '650px',
           marginLeft: 'auto',
           marginRight: 'auto',
           background: 'rgba(167, 194, 197, 0.2)',
