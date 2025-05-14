@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { FaPrint, FaChevronLeft, FaChevronRight, FaFilter } from "react-icons/fa";
+import { FaPrint, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { GoSearch, GoArrowLeft } from "react-icons/go";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./Payments.css"; 
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import { GoSearch, GoChevronLeft, GoArrowLeft } from "react-icons/go";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import "./Payments.css";
 
 const Payments = () => {
   const [transactions, setTransactionData] = useState([]);
@@ -21,6 +21,7 @@ const Payments = () => {
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [totalAmount, setTotalAmount] = useState(0); // 👈 Grand total
   const tableRef = useRef();
 
   const fetchTransactions = useCallback(() => {
@@ -31,15 +32,9 @@ const Payments = () => {
       url += `&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`;
     }
 
-    fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(url)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!response.ok) throw new Error("Network error");
         return response.json();
       })
       .then((data) => {
@@ -50,7 +45,7 @@ const Payments = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching payment transactions:", error);
+        console.error("Error fetching transactions:", error);
         setLoading(false);
       });
   }, [searchQuery, sorting, orderBy, currentPage, pageSize, startDate, endDate]);
@@ -58,12 +53,8 @@ const Payments = () => {
   const debounce = (func, delay) => {
     let timeoutId;
     return function (...args) {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        func(...args);
-      }, delay);
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
     };
   };
 
@@ -73,13 +64,46 @@ const Payments = () => {
     debouncedFetchTransactions();
   }, [debouncedFetchTransactions]);
 
+  useEffect(() => {
+    const fetchAllAndSumPayments = async () => {
+      let page = 1;
+      let total = 0;
+      let done = false;
+      const limit = 100; // adjust if server supports more
+
+      try {
+        while (!done) {
+          const res = await fetch(`https://monitor.tililtech.com/api/v1/nssf/payments?page=${page}&limit=${limit}`);
+          if (!res.ok) throw new Error("Failed to fetch page " + page);
+          const data = await res.json();
+
+          const pageSum = data.payments.reduce((acc, item) => {
+            const amt = parseFloat(item.amount);
+            return acc + (isNaN(amt) ? 0 : amt);
+          }, 0);
+
+          total += pageSum;
+          if (page >= data.totalPages) {
+            done = true;
+          } else {
+            page++;
+          }
+        }
+
+        setTotalAmount(total);
+      } catch (err) {
+        console.error("Error calculating totalAmount:", err);
+      }
+    };
+
+    fetchAllAndSumPayments();
+  }, []);
+
   const handleSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    } else if (sortConfig.key === key && sortConfig.direction === "desc") {
-      direction = "asc";
-    }
+    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
+    else if (sortConfig.key === key && sortConfig.direction === "desc") direction = "asc";
+
     setSortConfig({ key, direction });
     setSorting(direction);
     setOrderBy(key);
@@ -105,13 +129,13 @@ const Payments = () => {
   };
 
   const handleAfterPrint = () => {
-    window.location.reload(); // Reload the page after printing
+    window.location.reload();
   };
 
   useEffect(() => {
     window.onafterprint = handleAfterPrint;
     return () => {
-      window.onafterprint = null; // Clean up the event listener
+      window.onafterprint = null;
     };
   }, []);
 
@@ -139,12 +163,33 @@ const Payments = () => {
     setEndDate(date);
   };
 
+  const tableHeaderStyle = {
+    padding: "10px",
+    borderBottom: "2px solid #ddd",
+    color: "#fff",
+    cursor: "pointer",
+  };
+
+  const tableCellStyle = {
+    padding: "10px",
+    borderBottom: "1px solid #ddd",
+  };
+
+  const formatDate = (date) => {
+    const newDate = new Date(date);
+    return newDate.toLocaleString("en-GB", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  };
+
   return (
     <div className="tableBody">
-      <Link
-        to="/"
-        className="back-icon"
-        title="Home"
+      <Link to="/" className="back-icon" title="Home"
         style={{
           padding: "0.6rem",
           color: "#000",
@@ -152,50 +197,24 @@ const Payments = () => {
           float: "left",
           cursor: "pointer",
           display: "inline-flex",
-        }}
-      >
+        }}>
         <GoArrowLeft style={{ fontSize: "1rem" }} />
       </Link>
-      <h2>Payments</h2>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-          gap: "10px",
-        }}
-      >
-        <div
-          className="filterUtil"
-          style={{ position: "relative", maxWidth: "1120px", display: "flex", gap: "5px" }}
-        >
-          <GoSearch
-          size={17}
-            style={{
-              position: "absolute",
-              left: "10px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "#444",
-            }}
-          />
-          <div class="searcher">
-          <input
-            type="text"
-            placeholder="Search..."
-            title="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              float: "left",
-              backgroundColor:'#ccc',
-              padding: "7px 30px",
-              width: "100%",
-              borderRadius: "10em",
-              border: "none",
-            }}
-          />
+
+      <h2 style={{ color: '#000' }}>Payments</h2>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "10px" }}>
+        <div className="filterUtil" style={{ position: "relative", maxWidth: "200px", display: "flex", gap: "5px" }}>
+          <GoSearch size={17} style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#444" }} />
+          <div className="searcher">
+            <input
+              type="text"
+              placeholder="Looking for..."
+              title="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ backgroundColor: '#ccc', padding: "8px 35px", width: "100%", borderRadius: "50px", border: "none" }}
+            />
           </div>
         </div>
       </div>
@@ -215,34 +234,18 @@ const Payments = () => {
       </div>
 
       <div className="printUtil" style={{ textAlign: "right" }}>
-        <button
-          onClick={handlePrint}
-          style={{
-            padding: "2px 8px",
-            paddingLeft: "15px",
-            paddingRight: "5px",
-            outline: "none",
-            fontSize: "1rem",
-            borderRadius: "9px",
-            cursor: "pointer",
-          }}
-        >
+        <button onClick={handlePrint} style={{ padding: "2px 8px", paddingLeft: "15px", paddingRight: "5px", fontSize: "1rem", borderRadius: "9px", cursor: "pointer" }}>
           <FaPrint style={{ marginRight: "10px", color: "#000" }} />
         </button>
+        <div>
+          <p><strong>Total Amount: Ksh. {totalAmount.toLocaleString()}</strong></p>
+        </div>
       </div>
 
       {loading ? (
         <Skeleton count={20} height={40} />
       ) : (
-        <div
-          ref={tableRef}
-          style={{
-            marginTop: "1vh",
-            overflowX: "auto",
-            border: "1px solid #4F7200",
-            borderRadius: "5px",
-          }}
-        >
+        <div ref={tableRef} style={{ marginTop: "1vh", overflowX: "auto", border: "1px solid #4F7200", borderRadius: "5px" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead style={{ backgroundColor: "#0F7A41" }}>
               <tr>
@@ -261,7 +264,7 @@ const Payments = () => {
                 transactions.map((transaction, index) => (
                   <tr key={index} className={`text-center ${index % 2 === 0 ? 'bg-alternate' : ''}`}>
                     <td style={tableCellStyle}>{transaction.mpesa_ref ? "M-Pesa" : "Cash"}</td>
-                    <td style={tableCellStyle}>{transaction.mpesa_ref ? transaction.mpesa_ref : "N/A"}</td>
+                    <td style={tableCellStyle}>{transaction.mpesa_ref || "N/A"}</td>
                     <td style={tableCellStyle}>{`Ksh. ${transaction.amount}`}</td>
                     <td style={tableCellStyle}>{transaction.phone_number ? formatPhoneNumber(transaction.phone_number) : "N/A"}</td>
                     <td style={tableCellStyle}>{transaction.number_plate?.toUpperCase()}</td>
@@ -270,9 +273,7 @@ const Payments = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" style={{ padding: "10px", textAlign: "center" }}>
-                    No transactions found
-                  </td>
+                  <td colSpan="6" style={{ padding: "10px", textAlign: "center" }}>No transactions found</td>
                 </tr>
               )}
             </tbody>
@@ -282,53 +283,25 @@ const Payments = () => {
 
       <div className="pagination-controls">
         <button
-          style={{ borderRadius: "2vh", height: "2.2em"}}
+          style={{ borderRadius: "2vh", height: "2.2em" }}
           className="prev"
-          title="Previous Page"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          <FaChevronLeft style={{ borderRadius: "50%", padding: "5px" }} />
+          <FaChevronLeft />
         </button>
-        <span>
-          Page {currentPage} of {totalPages} Pages
-        </span>
+        <span>Page {currentPage} of {totalPages}</span>
         <button
-          style={{ borderRadius: "2vh", height: "2.2em"}}
+          style={{ borderRadius: "2vh", height: "2.2em" }}
           className="next"
-          title="Next Page"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          <FaChevronRight style={{ borderRadius: "50%", padding: "5px" }} />
+          <FaChevronRight />
         </button>
       </div>
     </div>
   );
-};
-
-const tableHeaderStyle = {
-  padding: "10px",
-  borderBottom: "2px solid #ddd",
-  color: "#fff",
-  cursor: "pointer",
-};
-
-const tableCellStyle = {
-  padding: "10px",
-  borderBottom: "1px solid #ddd",
-};
-
-const formatDate = (date) => {
-  const newDate = new Date(date);
-  return newDate.toLocaleString("en-GB", {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
 };
 
 export default Payments;
