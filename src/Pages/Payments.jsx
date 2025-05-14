@@ -21,7 +21,6 @@ const Payments = () => {
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [totalAmount, setTotalAmount] = useState(0); // 👈 Grand total
   const tableRef = useRef();
 
   const fetchTransactions = useCallback(() => {
@@ -63,41 +62,6 @@ const Payments = () => {
   useEffect(() => {
     debouncedFetchTransactions();
   }, [debouncedFetchTransactions]);
-
-  useEffect(() => {
-    const fetchAllAndSumPayments = async () => {
-      let page = 1;
-      let total = 0;
-      let done = false;
-      const limit = 100; // adjust if server supports more
-
-      try {
-        while (!done) {
-          const res = await fetch(`https://monitor.tililtech.com/api/v1/nssf/payments?page=${page}&limit=${limit}`);
-          if (!res.ok) throw new Error("Failed to fetch page " + page);
-          const data = await res.json();
-
-          const pageSum = data.payments.reduce((acc, item) => {
-            const amt = parseFloat(item.amount);
-            return acc + (isNaN(amt) ? 0 : amt);
-          }, 0);
-
-          total += pageSum;
-          if (page >= data.totalPages) {
-            done = true;
-          } else {
-            page++;
-          }
-        }
-
-        setTotalAmount(total);
-      } catch (err) {
-        console.error("Error calculating totalAmount:", err);
-      }
-    };
-
-    fetchAllAndSumPayments();
-  }, []);
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -237,9 +201,6 @@ const Payments = () => {
         <button onClick={handlePrint} style={{ padding: "2px 8px", paddingLeft: "15px", paddingRight: "5px", fontSize: "1rem", borderRadius: "9px", cursor: "pointer" }}>
           <FaPrint style={{ marginRight: "10px", color: "#000" }} />
         </button>
-        <div>
-          <p><strong>Total Amount: Ksh. {totalAmount.toLocaleString()}</strong></p>
-        </div>
       </div>
 
       {loading ? (
