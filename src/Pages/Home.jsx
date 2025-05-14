@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import './Home.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -45,9 +44,49 @@ const aggregateVehicleCountsByInterval = (transactions) => {
   }));
 };
 
+
+  
+
 const Home = () => {
   const [transactions, setTransactions] = useState([]);
   const [chartData, setChartData] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0); // 👈 Grand total
+
+  
+useEffect(() => {
+    const fetchAllAndSumPayments = async () => {
+      let page = 1;
+      let total = 0;
+      let done = false;
+      const limit = 100; // adjust if server supports more
+
+      try {
+        while (!done) {
+          const res = await fetch(`https://monitor.tililtech.com/api/v1/nssf/payments?page=${page}&limit=${limit}`);
+          if (!res.ok) throw new Error("Failed to fetch page " + page);
+          const data = await res.json();
+
+          const pageSum = data.payments.reduce((acc, item) => {
+            const amt = parseFloat(item.amount);
+            return acc + (isNaN(amt) ? 0 : amt);
+          }, 0);
+
+          total += pageSum;
+          if (page >= data.totalPages) {
+            done = true;
+          } else {
+            page++;
+          }
+        }
+
+        setTotalAmount(total);
+      } catch (err) {
+        console.error("Error calculating totalAmount:", err);
+      }
+    };
+
+    fetchAllAndSumPayments();
+  }, []);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -64,6 +103,13 @@ const Home = () => {
     };
 
     fetchTransactions();
+
+    // Add auto-refresh every 10 seconds
+    const intervalId = setInterval(() => {
+      fetchTransactions();
+    }, 20000); // 20 seconds
+
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -122,6 +168,9 @@ const Home = () => {
           <ChartComponent data={chartData} />
         </Suspense>
       </div>
+        <div>
+          <p><strong>Total Amount: Ksh. {totalAmount.toLocaleString()}</strong></p>
+        </div>
     </div>
   );
 };
